@@ -2,6 +2,7 @@ import React from "react";
 import {ShoppingList} from "@/models/shopping-list-model";
 import Link from "next/link";
 import ProductComponent from "@/components/product-component";
+import {generateRandomId} from "@/utilities/utilities";
 
 const ShoppingListComponent: (data: { shoppingList: ShoppingList, showDetails: boolean })
     => React.JSX.Element = (data: { shoppingList: ShoppingList, showDetails: boolean }) => {
@@ -18,7 +19,7 @@ const ShoppingListComponent: (data: { shoppingList: ShoppingList, showDetails: b
                 {
                     (data.showDetails && data.shoppingList.products) ?
                         data.shoppingList.products.map(product => (
-                            <ProductComponent product={product}></ProductComponent>
+                            <ProductComponent key={generateRandomId()} product={product}></ProductComponent>
                         ))
                     : <></>
                 }

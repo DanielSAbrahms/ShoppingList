@@ -9,7 +9,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     return (
         <>
             <nav>
-                <Link href="/shopping-lists">View Shopping Lists</Link>
+                <Link href={'/'}>View Shopping Lists</Link>
             </nav>
             <main>{children}</main> {/* This will render the page content */}
         </>

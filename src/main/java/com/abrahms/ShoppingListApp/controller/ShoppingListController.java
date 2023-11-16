@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.UUID;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 public class ShoppingListController {
 
     @Autowired

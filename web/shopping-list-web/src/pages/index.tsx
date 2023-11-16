@@ -3,10 +3,11 @@ import MainLayout from "@/layouts/main-layout";
 import {ShoppingList} from "@/models/shopping-list-model";
 import {getAllShoppingLists} from "@/services/api-service";
 import ShoppingListComponent from "@/components/list-component";
+import {generateRandomId} from "@/utilities/utilities";
 
 type ShoppingListProps = {
-    shoppingLists: ShoppingList[];
-    error?: string;
+  shoppingLists: ShoppingList[];
+  error?: string;
 }
 
 export async function getServerSideProps() {
@@ -20,21 +21,22 @@ export async function getServerSideProps() {
 }
 
 export default function ShoppingLists(props: ShoppingListProps) {
-    return (
-        <MainLayout>
-            <h1>Shopping Lists</h1>
-            <div>
-                {props.error ? (
-                    <p>Error: {props.error}</p>
-                ) : (
-                    props.shoppingLists.map(list => (
-                        <ShoppingListComponent
-                            shoppingList={list}
-                            showDetails={false}
-                        />
-                    ))
-                )}
-            </div>
-        </MainLayout>
-    )
+  return (
+      <MainLayout>
+        <h1>All Shopping Lists</h1>
+        <div>
+          {!props.error ? (
+              props.shoppingLists.map(list => (
+                  <ShoppingListComponent
+                      key={generateRandomId()}
+                      shoppingList={list}
+                      showDetails={false}
+                  />
+              ))
+          ) : (
+              <p>Error: {props.error}</p>
+          )}
+        </div>
+      </MainLayout>
+  )
 }
