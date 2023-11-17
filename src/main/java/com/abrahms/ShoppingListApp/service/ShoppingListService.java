@@ -40,6 +40,17 @@ public class ShoppingListService {
     public UUID addShoppingList(ShoppingListDTO shoppingListDTO) {
         ShoppingList shoppingList = convertShoppingListFromDTO(null, shoppingListDTO);
         shoppingListRepository.save(shoppingList);
+
+        Collection<StoreProductDTO> newProducts = shoppingListDTO.getProducts();
+
+        if (newProducts != null) {
+            // Create new ShoppingListItem entries for product list
+            for (StoreProductDTO newProduct : newProducts) {
+                ShoppingListItem newAssocItem = new ShoppingListItem(shoppingList.getId(), newProduct.getId());
+                shoppingListItemRepository.save(newAssocItem);
+            }
+        }
+
         return shoppingList.getId();
     }
 

@@ -9,7 +9,7 @@ import UpdateShoppingListForm from "@/forms/update-shopping-list-form";
 import ProductComponent from "@/components/product-component";
 import {generateRandomId} from "@/utilities/utilities";
 
-type ShoppingListProps = {
+type ShoppingListDetailsProps = {
     id: string;
     shoppingList: ShoppingList;
     error?: string;
@@ -26,7 +26,7 @@ export const getServerSideProps = async (context: any) => {
     }
 };
 
-export default function ShoppingLists(props: ShoppingListProps) {
+export default function ShoppingListDetails(props: ShoppingListDetailsProps) {
     return (
         <MainLayout>
             <h1>Shopping List</h1>
@@ -39,7 +39,6 @@ export default function ShoppingLists(props: ShoppingListProps) {
                         key={generateRandomId()}
                         shoppingList={props.shoppingList}
                         showDetails={true}
-
                     />
                 ) : (
                     <p>Error: {props.error}</p>
