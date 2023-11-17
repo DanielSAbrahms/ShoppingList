@@ -31,7 +31,7 @@ export default function ShoppingListDetails(props: ShoppingListDetailsProps) {
         <MainLayout>
             <h1>Shopping List</h1>
             <nav>
-                <Link href={`/shopping-lists/${props.id}/edit`}>Edit</Link>
+                <Link href={`/shopping-lists/${props.id}/edit`}>Edit List</Link>
             </nav>
             <div>
                 {!props.error  ? (

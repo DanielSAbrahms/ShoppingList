@@ -37,6 +37,7 @@ public class ShoppingListService {
         return shoppingList == null ? null : convertShoppingListToDTO(shoppingList, false, true);
     }
 
+    @Transactional
     public UUID addShoppingList(ShoppingListDTO shoppingListDTO) {
         ShoppingList shoppingList = convertShoppingListFromDTO(null, shoppingListDTO);
         shoppingListRepository.save(shoppingList);
@@ -63,10 +64,10 @@ public class ShoppingListService {
 
         Collection<StoreProductDTO> newProducts = newDataForShoppingListDTO.getProducts();
 
-        if (newProducts != null) { // If New Products is null, just  ignore update
-            // Start by removing existing assoc entries
-            shoppingListItemRepository.dropAllForList(id);
+        // Start by removing existing assoc entries
+        shoppingListItemRepository.dropAllForList(id);
 
+        if (newProducts != null) { // If New Products is null, just  ignore update
             // Create new ShoppingListItem entries for product list
             for (StoreProductDTO newProduct : newProducts) {
                 ShoppingListItem newAssocItem = new ShoppingListItem(id, newProduct.getId());
@@ -75,7 +76,9 @@ public class ShoppingListService {
         }
     }
 
+    @Transactional
     public void deleteShoppingListById(UUID id) {
+        shoppingListItemRepository.dropAllForList(id);
         shoppingListRepository.deleteById(id);
     }
 

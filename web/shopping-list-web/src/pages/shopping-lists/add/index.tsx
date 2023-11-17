@@ -8,6 +8,7 @@ import React, {useContext} from "react";
 import UpdateShoppingListForm from "@/forms/update-shopping-list-form";
 import {Product} from "@/models/product-model";
 import NewShoppingListForm from "@/forms/new-shopping-list-form";
+import {useRouter} from "next/router";
 
 type AddShoppingListProps = {
     allProducts?: Product[];
@@ -19,27 +20,33 @@ export const getServerSideProps = async () => {
         const allProducts: Product[] = await getAllProducts();
         return { props: { allProducts } };
     } catch (e: any) {
-        console.log('There was an error: ' + e.message);
+        console.error('There was an error: ' + e.message);
         return { props: { error: 'There was an error: ' + e.message}}
     }
 };
 export default function AddShoppingList(props: AddShoppingListProps) {
+
+    const router = useRouter();
     const onSubmit = (formData: ShoppingList) => {
         try {
-            addShoppingList(formData);
-            alert("Added Shopping List");
+            addShoppingList(formData).then((id: string) => {
+                console.log("Added Shopping List" + formData.toString());
+                router.replace(`/shopping-lists/${id}`)
+                return id;
+            });
         } catch (e: any) {
-            console.log('There was an error: ' + e.message);
+            console.error('There was an error: ' + e.message);
             return { props: { error: 'There was an error: ' + e.message}}
         }
     }
 
     return (
         <MainLayout>
-            <h1>Add Shopping List</h1>
+            <br/>
             <nav>
-                <Link href={`/shopping-lists}`}>Go Back</Link>
+                <Link href={`/`}>Back to All Lists</Link>
             </nav>
+            <h1>Add Shopping List</h1>
             <div>
                 <NewShoppingListForm
                     submitCallback={onSubmit}

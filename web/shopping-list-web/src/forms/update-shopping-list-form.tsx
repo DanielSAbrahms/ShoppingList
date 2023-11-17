@@ -24,13 +24,14 @@ export default function UpdateShoppingListForm(props: UpdateShoppingListFormProp
     })
 
     const verifyData = (formData: ShoppingList): boolean => {
-        return true;
+        return (formData.name !== null && formData.date !== null
+            && formData.date !== "xx-xx-xxxx");
     }
 
     const handleSubmit = (e: any) => {
         console.log("Submit pressed");
         e.preventDefault();
-        if (!verifyData(formData)) return;
+        if (!verifyData(formData)) throw new Error("Could not verify data");
         props.submitCallback(formData);
     }
 
@@ -70,21 +71,26 @@ export default function UpdateShoppingListForm(props: UpdateShoppingListFormProp
         <div>
             {!props.error ? (
                 <form onSubmit={handleSubmit}>
-                    <button type="submit">Save Changes</button>
+
                     <div>
-                    <input id="ListNameInput"
-                           type="text" name="name"
-                           value={formData.name}
-                           onChange={handleChange}
-                    />
+                        <label htmlFor="ListNameInput">Name: </label>
+                        <input id="ListNameInput"
+                               type="text" name="name"
+                               value={formData.name}
+                               onChange={handleChange}
+                        />
                     </div>
                     <div>
-                    <input id="ListDateInput"
-                           type="text" name="date"
-                           value={formData.date}
-                           onChange={handleChange}
-                    />
-                </div>
+                        <label htmlFor="ListDateInput">Date: &nbsp;&nbsp;</label>
+                        <input id="ListDateInput"
+                               type="text" name="date"
+                               value={formData.date}
+                               onChange={handleChange}
+                        />
+                    </div>
+                    <br/>
+                    <button type="submit">Save Changes</button>
+                    <br/>
                     <h3>Products </h3>
                     { formData.products ? formData.products.map(product => (
                         <ProductComponent
