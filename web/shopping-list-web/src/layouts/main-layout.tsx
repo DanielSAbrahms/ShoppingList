@@ -8,9 +8,13 @@ type MainLayoutProps = {
 const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     return (
         <>
+            <hr/>
             <nav>
-                <Link href={'/'}>View Shopping Lists</Link>
+                <Link href={'/'}>Shopping Lists</Link>
+                &nbsp;|&nbsp;
+                <Link href={'/stores'}>Stores</Link>
             </nav>
+            <hr/>
             <main>{children}</main> {/* This will render the page content */}
         </>
     );

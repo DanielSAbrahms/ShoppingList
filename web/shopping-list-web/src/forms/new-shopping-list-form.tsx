@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import MainLayout from "@/layouts/main-layout";
-import {ShoppingList} from "@/models/shopping-list-model";
+import {NewShoppingList, ShoppingList} from "@/models/shopping-list-model";
 import {getAllProducts, getAllShoppingLists, getShoppingListById} from "@/services/api-service";
 import ShoppingListComponent from "@/components/list-component";
 import React, {useState} from "react";
@@ -15,17 +15,17 @@ type NewShoppingListFormProps = {
 }
 
 export default function NewShoppingListForm(props: NewShoppingListFormProps) {
-    const emptyList: Product[] = [];
+    const emptyList: string[] = [];
     const [ formData,
         setFormData ] = useState( {
         name: "",
-        date: "xx-xx-xxxx",
+        date: "xxxx-xx-xx",
         products: emptyList
     })
 
-    const verifyData = (formData: ShoppingList): boolean => {
+    const verifyData = (formData: NewShoppingList): boolean => {
         return (formData.name !== null && formData.date !== null
-            && formData.date !== "xx-xx-xxxx");
+            && formData.date !== "xxxx-xx-xx");
     }
 
     const handleSubmit = (e: any) => {
@@ -47,7 +47,7 @@ export default function NewShoppingListForm(props: NewShoppingListFormProps) {
         const newProduct = props.allProducts?.find(x => x.id === id);
 
         if (newProduct) {
-            formData.products?.push(newProduct);
+            formData.products?.push(newProduct.id);
 
             setFormData(prevState => ({
                 ...prevState,
@@ -59,7 +59,8 @@ export default function NewShoppingListForm(props: NewShoppingListFormProps) {
     }
 
     const handleRemoveProduct = (id: string) => {
-        formData.products = formData.products?.filter(x => x.id !== id);
+        // TODO Fix deletion to avoid removing duplicates (or replace with quantity)
+        formData.products = formData.products?.filter(x => x !== id);
 
         setFormData(prevState => ({
             ...prevState,
@@ -92,16 +93,20 @@ export default function NewShoppingListForm(props: NewShoppingListFormProps) {
                     <button type="submit">Save Changes</button>
                     <br/>
                     <h3>Products </h3>
-                    { formData.products ? formData.products.map(product => (
-                        <ProductComponent
-                            key={generateRandomId()}
-                            product={product}
-                            isEditing={true}
-                            isPartOfList={true}
-                            addProductCallback={() => handleAddProduct}
-                            removeProductCallback={handleRemoveProduct}
-                        />
-                    )) :  <></> }
+                    { formData.products ? formData.products.map(productId => {
+                        const foundProduct: Product | undefined = props.allProducts?.find(x => x.id = productId);
+
+                        return foundProduct ? (
+                            <ProductComponent
+                                key={generateRandomId()}
+                                product={foundProduct}
+                                isEditing={true}
+                                isPartOfList={true}
+                                addProductCallback={() => handleAddProduct}
+                                removeProductCallback={handleRemoveProduct}
+                            />
+                        ) :  <></>
+                    }) :  <></> }
                     <hr/>
                     <h3>Add Products </h3>
                     { props.allProducts ? props.allProducts.map(product => (
