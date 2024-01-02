@@ -1,7 +1,9 @@
 package com.abrahms.ShoppingListApp.controller;
 
 import com.abrahms.ShoppingListApp.dto.ShoppingListDTO;
+import com.abrahms.ShoppingListApp.dto.StoreProductDTO;
 import com.abrahms.ShoppingListApp.service.ShoppingListService;
+import com.abrahms.ShoppingListApp.service.StoreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -17,6 +19,9 @@ public class ShoppingListController {
 
     @Autowired
     private ShoppingListService shoppingListService;
+
+    @Autowired
+    private StoreService storeService;
 
 
     @GetMapping("/shopping-lists")
@@ -37,6 +42,15 @@ public class ShoppingListController {
         } else  {
             return new ResponseEntity<>(shoppingListDTO, HttpStatus.OK);
         }
+    }
+
+    @GetMapping("/shopping-lists/{id}/products")
+    public ResponseEntity<Collection<StoreProductDTO>> getProductsByListID(@PathVariable UUID id) {
+        if (id == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        Collection<StoreProductDTO> products = storeService.getStoreProductsByShoppingListId(id);
+
+        return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
     // Add Store (POST)

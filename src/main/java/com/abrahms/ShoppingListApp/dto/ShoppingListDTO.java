@@ -21,7 +21,7 @@ public class ShoppingListDTO {
 
     private LocalDate date;
 
-    private Collection<StoreProductDTO> products;
+    private Collection<UUID> products;
 
     public UUID getId() {
         return id;
@@ -50,15 +50,15 @@ public class ShoppingListDTO {
     public ShoppingListDTO() {
     }
 
-    public Collection<StoreProductDTO> getProducts() {
+    public Collection<UUID> getProducts() {
         return products;
     }
 
-    public void setProducts(Collection<StoreProductDTO> products) {
+    public void setProducts(Collection<UUID> products) {
         this.products = products;
     }
 
-    public ShoppingListDTO(UUID id, String name, LocalDate date, Collection<StoreProductDTO> products) {
+    public ShoppingListDTO(UUID id, String name, LocalDate date, Collection<UUID> products) {
         this.id = id;
         this.name = name;
         this.date = date;

@@ -29,12 +29,12 @@ public class ShoppingListService {
 
     public Collection<ShoppingListDTO> getAllShoppingLists() {
         Collection<ShoppingList> shoppingLists = shoppingListRepository.findAll();
-        return shoppingLists.isEmpty() ? Collections.emptyList(): convertShoppingListsToDTOCollection(shoppingLists, true, false);
+        return shoppingLists.isEmpty() ? Collections.emptyList(): convertShoppingListsToDTOCollection(shoppingLists);
     }
 
     public ShoppingListDTO getShoppingListByID(UUID id) {
         ShoppingList shoppingList = shoppingListRepository.findById(id).orElse(null);
-        return shoppingList == null ? null : convertShoppingListToDTO(shoppingList, false, true);
+        return shoppingList == null ? null : convertShoppingListToDTO(shoppingList);
     }
 
     @Transactional
@@ -42,16 +42,17 @@ public class ShoppingListService {
         ShoppingList shoppingList = convertShoppingListFromDTO(null, shoppingListDTO);
         shoppingListRepository.save(shoppingList);
 
-        Collection<StoreProductDTO> newProducts = shoppingListDTO.getProducts();
+        // Map products from IDs
+        Collection<UUID> newProductIDs = shoppingListDTO.getProducts();
+        Collection<StoreProductDTO> newProducts = newProductIDs.stream().map(productId -> storeService.getStoreProductByID(productId)).toList();
 
-        if (newProducts != null) {
+        if (!newProducts.isEmpty()) {
             // Create new ShoppingListItem entries for product list
             for (StoreProductDTO newProduct : newProducts) {
                 ShoppingListItem newAssocItem = new ShoppingListItem(shoppingList.getId(), newProduct.getId());
                 shoppingListItemRepository.save(newAssocItem);
             }
         }
-
         return shoppingList.getId();
     }
 
@@ -62,12 +63,14 @@ public class ShoppingListService {
         ShoppingList shoppingList = convertShoppingListFromDTO(id, newDataForShoppingListDTO);
         shoppingListRepository.save(shoppingList);
 
-        Collection<StoreProductDTO> newProducts = newDataForShoppingListDTO.getProducts();
+        // Map products from IDs
+        Collection<UUID> newProductIDs = newDataForShoppingListDTO.getProducts();
+        Collection<StoreProductDTO> newProducts = newProductIDs.stream().map(productId -> storeService.getStoreProductByID(productId)).toList();
 
         // Start by removing existing assoc entries
         shoppingListItemRepository.dropAllForList(id);
 
-        if (newProducts != null) { // If New Products is null, just  ignore update
+        if (!newProducts.isEmpty()) { // If New Products is null, just  ignore update
             // Create new ShoppingListItem entries for product list
             for (StoreProductDTO newProduct : newProducts) {
                 ShoppingListItem newAssocItem = new ShoppingListItem(id, newProduct.getId());
@@ -97,12 +100,12 @@ public class ShoppingListService {
 
     // Converts DB Table into FE DTO
     // Ignores ID but includes a list of products
-    private ShoppingListDTO convertShoppingListToDTO(ShoppingList shoppingList, boolean includeId, boolean includeProducts) {
+    private ShoppingListDTO convertShoppingListToDTO(ShoppingList shoppingList) {
         return new ShoppingListDTO(
-                includeId ? shoppingList.getId() : null,
+                shoppingList.getId(),
                 shoppingList.getName(),
                 shoppingList.getDate(),
-                includeProducts ? storeService.getStoreProductsByShoppingListId(shoppingList.getId()) : null
+                storeService.getStoreProductIDsByShoppingListId(shoppingList.getId())
         );
     }
 
@@ -113,8 +116,8 @@ public class ShoppingListService {
 
     // Convert Shopping Lists to DTO for FE Consumption
     // Does not include ID, but does include a list of Products that needs to come from the StoreProduct table
-    private Collection<ShoppingListDTO> convertShoppingListsToDTOCollection(Collection<ShoppingList> shoppingLists, boolean includeId, boolean includeProducts) {
+    private Collection<ShoppingListDTO> convertShoppingListsToDTOCollection(Collection<ShoppingList> shoppingLists) {
         return shoppingLists.stream().map(
-                (ShoppingList shoppingList) -> convertShoppingListToDTO(shoppingList, includeId, includeProducts)).collect(Collectors.toList());
+                (ShoppingList shoppingList) -> convertShoppingListToDTO(shoppingList)).collect(Collectors.toList());
     }
 }

@@ -107,7 +107,7 @@ public class StoreController {
 
         if (storeId == null || id == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-        StoreProductDTO product = storeService.getStoreProductsByStoreIDAndProductID(storeId, id);
+        StoreProductDTO product = storeService.getStoreProductByStoreIDAndProductID(storeId, id);
 
         if (product == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
