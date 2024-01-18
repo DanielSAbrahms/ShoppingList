@@ -5,10 +5,8 @@ import {Product} from "@/models/product-model";
 type ProductComponentProps = {
     key: number;
     product: Product;
-
     isEditing?: boolean;
     isPartOfList?: boolean;
-
     addProductCallback?: Function;
     removeProductCallback?: Function;
 }

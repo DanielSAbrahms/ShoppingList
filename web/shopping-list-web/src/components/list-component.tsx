@@ -3,10 +3,9 @@ import {ShoppingList} from "@/models/shopping-list-model";
 import Link from "next/link";
 import ProductComponent from "@/components/product-component";
 import {generateRandomId} from "@/utilities/utilities";
-import { Product } from "@/models/product-model";
 
-const ShoppingListComponent: (data: { shoppingList: ShoppingList, products?: Product[], showDetails: boolean })
-    => React.JSX.Element = (data: { shoppingList: ShoppingList, products?: Product[], showDetails: boolean }) => {
+const ShoppingListComponent: (data: { shoppingList: ShoppingList, showDetails: boolean })
+    => React.JSX.Element = (data: { shoppingList: ShoppingList, showDetails: boolean }) => {
     return (
         <div className={"shopping-list-component-wrapper"}
             style={{
@@ -18,8 +17,8 @@ const ShoppingListComponent: (data: { shoppingList: ShoppingList, products?: Pro
             <h3>Date: { data.shoppingList.date }</h3>
             <div className={"shopping-list-products-wrapper"}>
                 {
-                    (data.showDetails && data.products) ?
-                        data.products.map(product => (
+                    (data.showDetails && data.shoppingList.products) ?
+                        data.shoppingList.products.map(product => (
                             <ProductComponent key={generateRandomId()} product={product}></ProductComponent>
                         ))
                     : <></>

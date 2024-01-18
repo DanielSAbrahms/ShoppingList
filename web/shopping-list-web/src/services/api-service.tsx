@@ -6,7 +6,7 @@ async function fetchData(endpoint: string): Promise<any> {
         method: 'GET',
     });
     if (response.ok) return response?.json();
-    else throw new Error(`Error sending get request to ${endpoint}`);
+    else throw new Error(`Error sending get request to :${endpoint}`);
 }
 
 async function addData(endpoint: string, data: object): Promise<any> {
@@ -21,7 +21,7 @@ async function addData(endpoint: string, data: object): Promise<any> {
     if (!response.ok) {
         console.error('Response Status:', response.status);
         console.error('Status Text:', response.statusText);
-        throw new Error(`Error sending post request to ${endpoint}`);
+        throw new Error(`Error sending post request to :${endpoint}`);
     } else {
         return (await response.text()).replace(/['"]+/g, '')
     }
@@ -37,7 +37,7 @@ async function putData(endpoint: string, data: object): Promise<any> {
     });
 
     if (!response.ok) {
-        throw new Error(`Error sending put request to ${endpoint}`);
+        throw new Error(`Error sending put request to :${endpoint}`);
     } else {
         return response;
     }
@@ -49,7 +49,7 @@ async function deleteData(endpoint: string): Promise<any> {
     });
 
     if (!response.ok) {
-        throw new Error(`Error sending delete request to ${endpoint}`);
+        throw new Error(`Error sending delete request to :${endpoint}`);
     } else {
         return response;
     }
@@ -60,9 +60,6 @@ export const getAllShoppingLists = (): Promise<ShoppingList[]> =>
 
 export const getShoppingListById = (id: string): Promise<ShoppingList> =>
     fetchData(`shopping-lists/${id}`);
-
-export const getProductsForShoppingListById = (id: string): Promise<Product[]> =>
-    fetchData(`shopping-lists/${id}/products`);
 
 export const addShoppingList = (newData: ShoppingList): Promise<string> => {
     return addData(`shopping-lists`, newData);
