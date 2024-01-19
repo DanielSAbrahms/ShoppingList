@@ -15,7 +15,7 @@ type NewShoppingListFormProps = {
 }
 
 export default function NewShoppingListForm(props: NewShoppingListFormProps) {
-    const emptyList: string[] = [];
+    const emptyList: Product[] = [];
     const [ formData,
         setFormData ] = useState( {
         name: "",
@@ -47,7 +47,7 @@ export default function NewShoppingListForm(props: NewShoppingListFormProps) {
         const newProduct = props.allProducts?.find(x => x.id === id);
 
         if (newProduct) {
-            formData.products?.push(newProduct.id);
+            formData.products?.push(newProduct);
 
             setFormData(prevState => ({
                 ...prevState,
@@ -60,7 +60,7 @@ export default function NewShoppingListForm(props: NewShoppingListFormProps) {
 
     const handleRemoveProduct = (id: string) => {
         // TODO Fix deletion to avoid removing duplicates (or replace with quantity)
-        formData.products = formData.products?.filter(x => x !== id);
+        formData.products = formData.products?.filter(x => x.id !== id);
 
         setFormData(prevState => ({
             ...prevState,
@@ -93,8 +93,8 @@ export default function NewShoppingListForm(props: NewShoppingListFormProps) {
                     <button type="submit">Save Changes</button>
                     <br/>
                     <h3>Products </h3>
-                    { formData.products ? formData.products.map(productId => {
-                        const foundProduct: Product | undefined = props.allProducts?.find(x => x.id = productId);
+                    { formData.products ? formData.products.map(product => {
+                        const foundProduct: Product | undefined = props.allProducts?.find(x => x.id = product.id);
 
                         return foundProduct ? (
                             <ProductComponent

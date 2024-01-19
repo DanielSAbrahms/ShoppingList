@@ -46,7 +46,7 @@ export default function UpdateShoppingListForm(props: UpdateShoppingListFormProp
         const newProduct = props.allProducts?.find(x => x.id === id);
 
         if (newProduct) {
-            formData.products?.push(newProduct.id);
+            formData.products?.push(newProduct);
 
             setFormData(prevState => ({
                 ...prevState,
@@ -58,7 +58,7 @@ export default function UpdateShoppingListForm(props: UpdateShoppingListFormProp
     }
 
     const handleRemoveProduct = (id: string) => {
-        formData.products = formData.products?.filter(x => x !== id);
+        formData.products = formData.products?.filter(x => x.id !== id);
 
         setFormData(prevState => ({
             ...prevState,
@@ -91,8 +91,8 @@ export default function UpdateShoppingListForm(props: UpdateShoppingListFormProp
                     <button type="submit">Save Changes</button>
                     <br/>
                     <h3>Products </h3>
-                    { formData.products ? formData.products.map(productId => {
-                        const foundProduct: Product | undefined = props.allProducts?.find(x => x.id = productId);
+                    { formData.products ? formData.products.map(product => {
+                        const foundProduct: Product | undefined = props.allProducts?.find(x => x.id == product.id);
 
                         return foundProduct ? (
                             <ProductComponent
