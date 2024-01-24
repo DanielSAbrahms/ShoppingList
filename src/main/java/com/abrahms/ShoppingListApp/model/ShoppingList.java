@@ -5,7 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 
-import java.time.LocalDate;
+import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -24,7 +24,7 @@ public class ShoppingList {
     }
 
     @Column
-    private LocalDate date;
+    private Date date;
 
     public void setId(UUID id) {
         this.id = id;
@@ -38,15 +38,15 @@ public class ShoppingList {
         this.name = name;
     }
 
-    public LocalDate getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
-    public ShoppingList(UUID id, String name, LocalDate date) {
+    public ShoppingList(UUID id, String name, Date date) {
         this.id = id;
         this.name = name;
         this.date = date;

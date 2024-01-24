@@ -6,20 +6,17 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 
-import java.time.LocalDate;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 
 public class ShoppingListDTO {
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+
+//    @JsonInclude(JsonInclude.Include.NON_NULL)
     private UUID id;
     private String name;
 
-    private LocalDate date;
+    private Date date;
 
     private Collection<StoreProductDTO> products;
 
@@ -39,11 +36,11 @@ public class ShoppingListDTO {
         this.name = name;
     }
 
-    public LocalDate getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
@@ -58,7 +55,7 @@ public class ShoppingListDTO {
         this.products = products;
     }
 
-    public ShoppingListDTO(UUID id, String name, LocalDate date, Collection<StoreProductDTO> products) {
+    public ShoppingListDTO(UUID id, String name, Date date, Collection<StoreProductDTO> products) {
         this.id = id;
         this.name = name;
         this.date = date;

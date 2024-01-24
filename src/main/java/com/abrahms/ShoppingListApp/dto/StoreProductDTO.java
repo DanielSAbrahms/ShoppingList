@@ -17,6 +17,16 @@ public class StoreProductDTO {
 
     private Double price;
 
+    private UUID storeId;
+
+    public UUID getStoreId() {
+        return storeId;
+    }
+
+    public void setStoreId(UUID storeId) {
+        this.storeId = storeId;
+    }
+
     public UUID getId() {
         return id;
     }
@@ -49,12 +59,12 @@ public class StoreProductDTO {
         this.price = price;
     }
 
-
-    public StoreProductDTO(UUID id, String productName, String brandName, Double price) {
+    public StoreProductDTO(UUID id, String productName, String brandName, Double price, UUID storeId) {
         this.id = id;
         this.productName = productName;
         this.brandName = brandName;
         this.price = price;
+        this.storeId = storeId;
     }
 
     public StoreProductDTO() {

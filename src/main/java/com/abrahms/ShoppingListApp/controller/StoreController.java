@@ -56,11 +56,11 @@ public class StoreController {
     // Param: ID (URL)
     // Param: newDataForStoreDTO (Body) - If ID is present in Body, must be same to URL
     @PutMapping("/stores/{storeID}")
-    public ResponseEntity<Void> updateStoreById(@PathVariable UUID storeId, @RequestBody StoreDTO newDataForStoreDTO) {
+    public ResponseEntity<Void> updateStoreById(@PathVariable UUID storeID, @RequestBody StoreDTO newDataForStoreDTO) {
         try {
-            if (storeId == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            if (storeID == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-            storeService.updateStoreById(storeId, newDataForStoreDTO);
+            storeService.updateStoreById(storeID, newDataForStoreDTO);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch(Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -134,12 +134,12 @@ public class StoreController {
     // Update StoreProduct (PUT)
     // Param: ID (URL)
     // Param: newDataForStoreProductDTO (Body) - overwrites storeId with URL Param
-    @PutMapping("/stores/{storeID}/products/{id}")
-    public ResponseEntity<Void> updateProductForStoreById(@PathVariable UUID storeId, @PathVariable UUID id, @RequestBody StoreProductDTO newDataForStoreProductDTO) {
+    @PutMapping("/stores/products/{id}")
+    public ResponseEntity<Void> updateProductForStoreById(@PathVariable UUID id, @RequestBody StoreProductDTO newDataForStoreProductDTO) {
         try {
-            if (storeId == null || id == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            if (id == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-            storeService.updateStoreProductById(storeId, id, newDataForStoreProductDTO);
+            storeService.updateStoreProductById(id, newDataForStoreProductDTO);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch(Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

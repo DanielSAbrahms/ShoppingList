@@ -33,13 +33,13 @@ public class StoreService {
     }
 
     public UUID addStore(StoreDTO newStoreDTO) {
-        Store newStore = convertStoreFromDTO(newStoreDTO);
+        Store newStore = convertStoreFromDTO(null, newStoreDTO);
         storeRepository.save(newStore);
         return newStore.getId();
     }
 
     public void updateStoreById(UUID id, StoreDTO newDataForStoreDTO) {
-        Store store = convertStoreFromDTO(newDataForStoreDTO);
+        Store store = convertStoreFromDTO(id, newDataForStoreDTO);
         storeRepository.save(store);
     }
 
@@ -51,6 +51,12 @@ public class StoreService {
     public Collection<StoreProductDTO> getAllStoreProducts() {
         Collection<StoreProduct> productCollection = storeProductRepository.findAll();
         return productCollection.isEmpty() ? Collections.emptyList(): convertStoreProductsToDTOCollection(productCollection, true);
+    }
+
+    public StoreProductDTO getStoreProductById(UUID id) {
+        StoreProduct product = storeProductRepository.findById(id).orElse(null);
+        return product == null ? null : convertStoreProductToDTO(product);
+
     }
 
     public Collection<StoreProductDTO> getStoreProductsByShoppingListId(UUID shoppingListId) {
@@ -65,7 +71,7 @@ public class StoreService {
 
     public StoreProductDTO getStoreProductsByStoreIDAndProductID(UUID storeId, UUID productId) {
         StoreProduct product = storeProductRepository.findByStoreIDAndProductID(storeId, productId).orElse(null);
-        return product == null ? null : convertStoreProductToDTO(product, true);
+        return product == null ? null : convertStoreProductToDTO(product);
     }
 
     public UUID addStoreProduct(UUID storeId, StoreProductDTO newStoreProductDTO) {
@@ -74,8 +80,10 @@ public class StoreService {
         return newStoreProduct.getId();
     }
 
-    public void updateStoreProductById(UUID storeId, UUID id, StoreProductDTO newDataForStoreProductDTO) {
-        StoreProduct newStoreProduct = convertStoreProductFromDTO(storeId, id, newDataForStoreProductDTO);
+    public void updateStoreProductById(UUID id, StoreProductDTO newDataForStoreProductDTO) {
+        StoreProductDTO existingProduct = getStoreProductById(id);
+
+        StoreProduct newStoreProduct = convertStoreProductFromDTO(id, existingProduct.getStoreId(), newDataForStoreProductDTO);
         storeProductRepository.save(newStoreProduct);
     }
 
@@ -86,10 +94,9 @@ public class StoreService {
     // ---------- Private Methods ----------
 
     // For adding to DB from DTO
-    // Fetch ID from DTO, if exists, else generate new one
-    private Store convertStoreFromDTO(StoreDTO storeDTO) {
+    private Store convertStoreFromDTO(UUID id, StoreDTO storeDTO) {
         return new Store(
-                null,
+                id,
                 storeDTO.getName()
         );
     }
@@ -97,13 +104,9 @@ public class StoreService {
     // For pulling from DB into DTO
     private StoreDTO convertStoreToDTO(Store store) {
         return new StoreDTO(
+                store.getId(),
                 store.getName()
         );
-    }
-
-    private Collection<Store> convertStoresFromDTOCollection(Collection<StoreDTO> storeDTOCollection) {
-        return storeDTOCollection.stream().map(
-                this::convertStoreFromDTO).collect(Collectors.toList());
     }
 
     private Collection<StoreDTO> convertStoresToDTOCollection(Collection<Store> storeDTOCollection) {
@@ -112,7 +115,6 @@ public class StoreService {
     }
 
     // For adding to DB from DTO
-    // Fetch ID from DTO, if exists, else generate new one
     private StoreProduct convertStoreProductFromDTO(UUID id, UUID storeId, StoreProductDTO storeProductDTO) {
         return new StoreProduct(
                 id,
@@ -124,12 +126,13 @@ public class StoreService {
     }
 
     // For pulling from DB into DTO
-    private StoreProductDTO convertStoreProductToDTO(StoreProduct storeProduct, boolean includeId) {
+    private StoreProductDTO convertStoreProductToDTO(StoreProduct storeProduct) {
         return new StoreProductDTO(
-                includeId ? storeProduct.getId() : null,
+                storeProduct.getId(),
                 storeProduct.getProductName(),
                 storeProduct.getBrandName(),
-                storeProduct.getPrice()
+                storeProduct.getPrice(),
+                storeProduct.getStoreId()
         );
     }
 
@@ -139,7 +142,7 @@ public class StoreService {
     }
 
     private Collection<StoreProductDTO> convertStoreProductsToDTOCollection(Collection<StoreProduct> storeProductCollection, boolean includeId) {
-        return storeProductCollection.stream().map((StoreProduct storeProduct) -> convertStoreProductToDTO(storeProduct, includeId)).collect(Collectors.toList());
+        return storeProductCollection.stream().map((StoreProduct storeProduct) -> convertStoreProductToDTO(storeProduct)).collect(Collectors.toList());
 
     }
 }
