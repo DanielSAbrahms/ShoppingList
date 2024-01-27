@@ -1,5 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
+import store from '@/stores/store';
+import { Provider } from 'react-redux';
 
 type MainLayoutProps = {
     children: React.ReactNode;
@@ -7,7 +9,7 @@ type MainLayoutProps = {
 
 const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     return (
-        <>
+        <Provider store={store}>
             <hr/>
             <nav>
                 <Link href={'/'}>Shopping Lists</Link>
@@ -16,7 +18,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             </nav>
             <hr/>
             <main>{children}</main> {/* This will render the page content */}
-        </>
+        </Provider>
     );
 };
 

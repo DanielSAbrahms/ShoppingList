@@ -1,23 +1,22 @@
-import Image from 'next/image'
 import MainLayout from "@/layouts/main-layout";
 import {ShoppingList} from "@/models/shopping-list-model";
-import {addShoppingList, getAllProducts, getShoppingListById, updateShoppingListById} from "@/services/api-service";
-import ShoppingListComponent from "@/components/list-component";
+import {addShoppingList, getAllProducts} from "@/services/api-service";
 import Link from "next/link";
-import React, {useContext} from "react";
-import UpdateShoppingListForm from "@/forms/update-shopping-list-form";
+import React from "react";
 import {Product} from "@/models/product-model";
 import NewShoppingListForm from "@/forms/new-shopping-list-form";
 import {useRouter} from "next/router";
+import { generateRandomId } from '@/utilities/utilities';
 
 type AddShoppingListProps = {
     allProducts?: Product[];
 }
 
-
 export const getServerSideProps = async () => {
     try {
         const allProducts: Product[] = await getAllProducts();
+        allProducts.map(p => p.key = generateRandomId());
+
         return { props: { allProducts } };
     } catch (e: any) {
         console.error('There was an error: ' + e.message);

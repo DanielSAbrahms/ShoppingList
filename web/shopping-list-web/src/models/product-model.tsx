@@ -10,3 +10,8 @@ export type NewProduct = {
     productName: string;
     price: number;
 }
+
+export type ProductInList = {
+    product: Product;
+    quantity: number;
+}

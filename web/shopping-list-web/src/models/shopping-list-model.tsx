@@ -1,4 +1,4 @@
-import { Product } from "./product-model";
+import { Product, ProductInList } from "./product-model";
 
 export type ShoppingList = {
     id: string;
@@ -10,5 +10,5 @@ export type ShoppingList = {
 export type NewShoppingList = {
     name: string;
     date: string;
-    products: Product[];
+    products: ProductInList[];
 }

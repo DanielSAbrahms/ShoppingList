@@ -7,21 +7,21 @@ import React, {useState} from "react";
 import ProductComponent from "@/components/product-component";
 import {Product} from "@/models/product-model";
 import {generateRandomId} from "@/utilities/utilities";
+import store from '@/stores/store';
+import { useDispatch, useSelector } from 'react-redux';
 
 type NewShoppingListFormProps = {
     submitCallback: Function;
     error?: string;
-    allProducts?: Product[];
+    allProducts?: Product[]; // Products should have key at this point
 }
 
 export default function NewShoppingListForm(props: NewShoppingListFormProps) {
-    const emptyList: Product[] = [];
-    const [ formData,
-        setFormData ] = useState( {
-        name: "",
-        date: "xxxx-xx-xx",
-        products: emptyList
-    })
+
+    const dispatch = useDispatch();
+    const listNameFormData = useSelector((state: NewShoppingList) => state.name);
+    const listDateFormData = useSelector((state: NewShoppingList) => state.date);
+    const listProductsFormData = useSelector((state: NewShoppingList) => state.products);
 
     const verifyData = (formData: NewShoppingList): boolean => {
         return (formData.name !== null && formData.date !== null
@@ -29,96 +29,104 @@ export default function NewShoppingListForm(props: NewShoppingListFormProps) {
     }
 
     const handleSubmit = (e: any) => {
-        console.log("Submit pressed");
         e.preventDefault();
-        if (!verifyData(formData)) throw new Error("Could not verify data");
-        props.submitCallback(formData);
+
+        const newFormData = store.getState();
+        if (!verifyData(newFormData)) throw new Error("Could not verify data");
+        props.submitCallback(newFormData);
     }
 
-    const handleChange = (e: any) => {
-        const { name, value } = e.target
-        setFormData(prevState => ({
-            ...prevState,
-            [name]: value
-        }));
+    const handleNameChange = (e: any) => {
+        dispatch({type: 'changeName', payload: e.target.value});
     }
 
+    const handleDateChange = (e: any) => {
+        dispatch({type: 'changeDate', payload: e.target.value});
+    }
+
+    // Should handle adding product or incrementing count
     const handleAddProduct = (id: string) => {
-        const newProduct = props.allProducts?.find(x => x.id === id);
+        const newProduct = props.allProducts?.find(p => p.id === id);
 
         if (newProduct) {
-            formData.products?.push(newProduct);
-
-            setFormData(prevState => ({
-                ...prevState,
-                products: formData.products
-            }));
+            dispatch({type: 'addProduct', payload: newProduct })
         } else {
             throw new Error("Can't find product by that ID");
         }
     }
 
+    // Should handle removing product or decrementing count
     const handleRemoveProduct = (id: string) => {
-        // TODO Fix deletion to avoid removing duplicates (or replace with quantity)
-        formData.products = formData.products?.filter(x => x.id !== id);
+        const productToRemove = listProductsFormData.find(p => p.product.id === id);
 
-        setFormData(prevState => ({
-            ...prevState,
-            products: formData.products
-        }));
+        if (productToRemove) {
+            dispatch({type: 'removeProduct', payload: productToRemove })
+        } else {
+            throw new Error("Can't find product by that Key");
+        }
     }
 
     return (
         <div>
             {!props.error ? (
                 <form onSubmit={handleSubmit}>
-
                     <div>
                         <label htmlFor="ListNameInput">Name: </label>
                         <input id="ListNameInput"
                                type="text" name="name"
-                               value={formData.name}
-                               onChange={handleChange}
+                               value={listNameFormData}
+                               onChange={handleNameChange}
                         />
                     </div>
                     <div>
                         <label htmlFor="ListDateInput">Date: &nbsp;&nbsp;</label>
                         <input id="ListDateInput"
                                type="text" name="date"
-                               value={formData.date}
-                               onChange={handleChange}
+                               value={listDateFormData}
+                               onChange={handleDateChange}
                         />
                     </div>
                     <br/>
                     <button type="submit">Save Changes</button>
                     <br/>
-                    <h3>Products </h3>
-                    { formData.products ? formData.products.map(product => {
-                        const foundProduct: Product | undefined = props.allProducts?.find(x => x.id = product.id);
 
-                        return foundProduct ? (
+                    <h3>Products </h3>
+                    {/* Iterate over products in form state data */}
+                    { listProductsFormData ? listProductsFormData.map(productInList => {
+
+                        // Lookup details
+                        // const listProduct: Product | undefined = props.allProducts?.find(x => x.id = product.id);
+
+                        // if (!product.key) product.key = generateRandomId();
+
+                        return product ? (
                             <ProductComponent
                                 key={generateRandomId()}
-                                product={foundProduct}
+                                product={productInList.product}
+                                quantity={productInList.quantity}
                                 isEditing={true}
                                 isPartOfList={true}
-                                addProductCallback={() => handleAddProduct}
                                 removeProductCallback={handleRemoveProduct}
                             />
-                        ) :  <></>
-                    }) :  <></> }
+                        ) : /* If Product is null */ <></>
+                    }) : /* If listProductsFormData is null */ <></> }
                     <hr/>
+
                     <h3>Add Products </h3>
-                    { props.allProducts ? props.allProducts.map(product => (
-                        <ProductComponent
-                            key={generateRandomId()}
-                            product={product}
-                            isEditing={true}
-                            isPartOfList={false}
-                            addProductCallback={handleAddProduct}
-                            removeProductCallback={handleRemoveProduct}
-                        />
-                    )) :  <></> }
+                    { props.allProducts ? props.allProducts.map(product => {
+
+                        // if (!product.key) product.key = generateRandomId();
+
+                        return product? ( 
+                            <ProductComponent
+                                key={product.key}
+                                product={product}
+                                isEditing={true}
+                                isPartOfList={false}
+                                addProductCallback={handleAddProduct}
+                            />
+                        ) : /* If Product is null */ <></>
+                    }) : /* If props.allProducts is null */ <></> }
 
                 </form>
             ) : (
