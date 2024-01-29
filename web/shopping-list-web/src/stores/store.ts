@@ -1,8 +1,8 @@
-import newFormReducer from "@/reducers/new-form-reducer";
+import newListReducer from "@/reducers/new-list-reducer";
 import { configureStore } from '@reduxjs/toolkit';
 
 const store = configureStore({
-    reducer: newFormReducer
+    reducer: newListReducer
 });
 
 export default store;

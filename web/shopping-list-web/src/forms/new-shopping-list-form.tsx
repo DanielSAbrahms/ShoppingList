@@ -9,19 +9,21 @@ import {Product} from "@/models/product-model";
 import {generateRandomId} from "@/utilities/utilities";
 import store from '@/stores/store';
 import { useDispatch, useSelector } from 'react-redux';
+import { newListReducerProps } from '@/reducers/new-list-reducer';
 
 type NewShoppingListFormProps = {
     submitCallback: Function;
     error?: string;
-    allProducts?: Product[]; // Products should have key at this point
+    // allProducts?: Product[];
+    // productsNotInList?: Product[];
 }
 
 export default function NewShoppingListForm(props: NewShoppingListFormProps) {
 
     const dispatch = useDispatch();
-    const listNameFormData = useSelector((state: NewShoppingList) => state.name);
-    const listDateFormData = useSelector((state: NewShoppingList) => state.date);
-    const listProductsFormData = useSelector((state: NewShoppingList) => state.products);
+    const listNameFormData = useSelector((state: newListReducerProps) => state.newShoppingList.name);
+    const listDateFormData = useSelector((state: newListReducerProps) => state.newShoppingList.date);
+    const listProductsFormData = useSelector((state: newListReducerProps) => state.newShoppingList.products);
 
     const verifyData = (formData: NewShoppingList): boolean => {
         return (formData.name !== null && formData.date !== null
@@ -46,10 +48,12 @@ export default function NewShoppingListForm(props: NewShoppingListFormProps) {
 
     // Should handle adding product or incrementing count
     const handleAddProduct = (id: string) => {
+        console.log("handleAddProduct");
         const newProduct = props.allProducts?.find(p => p.id === id);
 
         if (newProduct) {
-            dispatch({type: 'addProduct', payload: newProduct })
+            dispatch({type: 'addProduct', payload: newProduct });
+            props.productsNotInList = props.allProducts?.filter(p => p.id !== newProduct.id);
         } else {
             throw new Error("Can't find product by that ID");
         }
@@ -99,13 +103,14 @@ export default function NewShoppingListForm(props: NewShoppingListFormProps) {
 
                         // if (!product.key) product.key = generateRandomId();
 
-                        return product ? (
+                        return productInList ? (
                             <ProductComponent
                                 key={generateRandomId()}
                                 product={productInList.product}
                                 quantity={productInList.quantity}
                                 isEditing={true}
-                                isPartOfList={true}
+                                // isPartOfList={true}
+                                addProductCallback={handleAddProduct}
                                 removeProductCallback={handleRemoveProduct}
                             />
                         ) : /* If Product is null */ <></>
@@ -119,10 +124,11 @@ export default function NewShoppingListForm(props: NewShoppingListFormProps) {
 
                         return product? ( 
                             <ProductComponent
-                                key={product.key}
+                                key={generateRandomId()}
                                 product={product}
+                                quantity={0}
                                 isEditing={true}
-                                isPartOfList={false}
+                                // isPartOfList={false}
                                 addProductCallback={handleAddProduct}
                             />
                         ) : /* If Product is null */ <></>

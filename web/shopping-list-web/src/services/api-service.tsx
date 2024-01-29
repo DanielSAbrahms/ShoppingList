@@ -1,4 +1,4 @@
-import {ShoppingList} from "@/models/shopping-list-model";
+import {NewShoppingList, ShoppingList} from "@/models/shopping-list-model";
 import {Product} from "@/models/product-model";
 
 async function fetchData(endpoint: string): Promise<any> {
@@ -61,8 +61,24 @@ export const getAllShoppingLists = (): Promise<ShoppingList[]> =>
 export const getShoppingListById = (id: string): Promise<ShoppingList> =>
     fetchData(`shopping-lists/${id}`);
 
-export const addShoppingList = (newData: ShoppingList): Promise<string> => {
-    return addData(`shopping-lists`, newData);
+// Should convert NewShoppingList with quantities into ShoppingList with duplicate instances
+export const addShoppingList = (newData: NewShoppingList): Promise<string> => {
+    console.log(newData);
+    // Fill in Static Data
+    var data: ShoppingList = {
+        name: newData.name,
+        date: newData.date,
+        products: []
+    };
+
+    // For each product, push instance into list for every quantity
+    newData.products.map(productInList => {
+        for (var i = 0; i < productInList.quantity; i++) {
+            data.products.push(productInList.product);
+        }
+    });
+    console.log(data);
+    return addData(`shopping-lists`, data);
 }
 
 export const updateShoppingListById = (id: string, newData: ShoppingList): Promise<string> => {

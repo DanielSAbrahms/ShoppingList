@@ -7,7 +7,7 @@ type ProductComponentProps = {
     product: Product;
     quantity?: number;
     isEditing?: boolean;
-    isPartOfList?: boolean;
+    // isPartOfList?: boolean;
     addProductCallback?: Function;
     removeProductCallback?: Function;
 }
@@ -17,6 +17,7 @@ const ProductComponent: (props: ProductComponentProps)
     {
 
     const addProduct = (id: string) => {
+        console.log("On Click Pressed");
         if (props.addProductCallback) { props.addProductCallback(id); }
     }
 
@@ -36,14 +37,17 @@ const ProductComponent: (props: ProductComponentProps)
             <h3>Price: ${ props.product.price }</h3>
             <div>
                 { props.isEditing ? (
-                    <div>
-                        {!props.isPartOfList ?
-                            (<button onClick={() => addProduct(props.product.id)}> Add </button>)
-                            :
-                            (<button onClick={() => removeProduct(props.product.id)}> Remove </button>)
-                        }
-                    </div>
-                ) : (<></>) }
+                    <span>
+                        <button type="button" onClick={() => removeProduct(props.product.id)}> - </button>
+                        <h3>Quantity: { props.quantity }</h3>
+                        <button type="button" onClick={() => addProduct(props.product.id)}> + </button>
+                    </span>
+                ) : (
+                    <span>
+                        <h3>Quantity: { props.quantity }</h3>
+                    </span>
+                    )
+                }
             </div>
         </div>
     );
