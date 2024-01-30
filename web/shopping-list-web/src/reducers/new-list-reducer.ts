@@ -4,90 +4,162 @@ import { ReducerAction } from "react";
 import { Reducer } from "redux";
 
 export type newListReducerProps = {
-    newShoppingList: NewShoppingList,
-    allProducts?: Product[],
-    productsNotInList?: Product[]
-}
+    newShoppingList: NewShoppingList; // The metadata and products in the shopping list
+    allProducts: Product[]; // All products (doesn't not change)
+    productsNotInList: Product[]; // All products not in list (updated when shopping list is updated)
+};
 
 const initialState: newListReducerProps = {
     newShoppingList: {
         name: "",
         date: "xxxx-xx-xx",
-        products: []
+        products: [],
     },
     allProducts: [],
-    productsNotInList: []
-}
+    productsNotInList: [],
+};
 
-const newListReducer: Reducer<newListReducerProps> = (state = initialState, action: any) => {
+const newListReducer: Reducer<newListReducerProps> = (
+    state = initialState,
+    action: any
+) => {
     switch (action.type) {
         default: // No specific action, just return state
-            return state
+            return state;
 
-        case 'changeName': { // Payload is new name value
+        case "changeName": {
+            // Payload is new name value
             return {
                 ...state,
-                name: action.payload
-            }
+                name: action.payload,
+            };
         }
 
-        case 'changeDate': { // Payload is new date value
+        case "changeDate": {
+            // Payload is new date value
             return {
                 ...state,
-                date: action.payload
-            }
+                date: action.payload,
+            };
         }
 
-        case 'addProduct': { // Payload is new Product
-            console.log("addProduct reducer");
-            var foundProduct = state.newShoppingList.products.find(p => p.product.id === action.payload.product.id);
-            
-            if (foundProduct) { // If product already exists in list
-                foundProduct.quantity++;
+        // Payload is new Product ID
+        case "addProduct": {
+            // First, check if products is in list
+            var productInList = state.newShoppingList.products.find(
+                (p) => p.product.id === action.payload
+            );
+
+            // If in list, just increment
+            if (productInList) {
+                const newProducts = state.newShoppingList.products.map((p) => {
+                    if (p.product.id === action.payload) {
+                        return { product: p.product, quantity: p.quantity + 1 };
+                    } else return p;
+                });
 
                 return {
                     ...state,
-                    products: [
-                        ...state.newShoppingList.products.filter(p => p.product.id !== foundProduct?.product.id),
-                        foundProduct
-                    ]
+                    newShoppingList: {
+                        ...state.newShoppingList,
+                        products: newProducts,
+                    },
+                };
+                // If not in list, lookup details, add to list, and remove from productsNotInList
+            } else {
+                const productLookup = state.allProducts?.find(
+                    (p) => p.id === action.payload
+                );
+
+                if (!productLookup) {
+                    console.error(
+                        `Could not find product with requested id of : ${action.payload}`
+                    );
+                    return state;
                 }
-            } else { // If Product doesn't not exist in list
-                const newProductForList: ProductInList = { product: action.payload, quantity: 1 };
+
+                // If Product doesn't not exist in list
+                const newProductForList: ProductInList = {
+                    product: productLookup,
+                    quantity: 1,
+                };
+
+                const newProductsNotInList = state.productsNotInList.filter(
+                    (p) => {
+                        return p.id !== newProductForList.product.id;
+                    }
+                );
 
                 return {
                     ...state,
-                    products: [
-                        ...state.newShoppingList.products,
-                        newProductForList // Append product to list with quantity of 1
-                    ]
-                }
+                    newShoppingList: {
+                        ...state.newShoppingList,
+                        products: [
+                            ...state.newShoppingList.products,
+                            newProductForList, // Append product to list with quantity of 1
+                        ],
+                    },
+                    productsNotInList: newProductsNotInList, // Filter out product
+                };
             }
         }
 
-        case 'removeProduct': { // Payload is Product
-            var foundProduct = state.newShoppingList.products.find(p => p.product.id === action.payload.product.id);
-            if (!foundProduct) return state; // If can't find product in list, don't do anything
+        // Payload is Product
+        case "removeProduct": {
+            var foundProduct = state.newShoppingList.products.find(
+                (p) => p.product.id === action.payload
+            );
+            if (!foundProduct) {
+                console.error(
+                    `Could not find product in list with id of : ${action.payload}`
+                );
+                return state;
+            }
 
-            foundProduct.quantity--;
+            const newQuantity = foundProduct.quantity - 1;
 
-            if (foundProduct.quantity < 1) { // If no more quantity, remove from list
+            if (newQuantity < 1) {
+                // If no more quantity, remove from list
                 return {
                     ...state,
                     // remove Product to state's product list
-                    products: state.newShoppingList.products.filter(p => p.product.id !== action.payload.id)
-                }
-            } else { // Otherwise, just decrement quantity
+                    newShoppingList: {
+                        ...state.newShoppingList,
+                        products: state.newShoppingList.products.filter(
+                            (p) => p.product.id !== action.payload
+                        ),
+                    },
+                    productsNotInList: [
+                        ...state.productsNotInList,
+                        foundProduct.product,
+                    ],
+                };
+            } else {
+                // Otherwise, just decrement quantity
+                const newProducts = state.newShoppingList.products.map((p) => {
+                    if (p.product.id === action.payload) {
+                        return { product: p.product, quantity: p.quantity - 1 };
+                    } else return p;
+                });
+
                 return {
                     ...state,
-                    products: [
-                        ...state.newShoppingList.products.filter(p => p.product.id !== foundProduct?.product.id),
-                        foundProduct
-                    ]
-                }
+                    newShoppingList: {
+                        ...state.newShoppingList,
+                        products: newProducts,
+                    },
+                };
             }
         }
+
+        case "setupAllProducts": {
+            return {
+                ...state,
+                allProducts: action.payload,
+                productsNotInList: action.payload,
+            };
+        }
     }
-}
+};
 
 export default newListReducer;

@@ -1,29 +1,36 @@
 import { Product } from "@/models/product-model";
 
-export function addProduct(product: Product) {
+export function addProduct(id: string) {
     return {
-        type: 'addProduct',
-        payload: product
-    }
+        type: "addProduct",
+        payload: id,
+    };
 }
 
-export function removeProduct(product: Product) {
+export function removeProduct(id: string) {
     return {
-        type: 'removeProduct',
-        payload: product
-    }
+        type: "removeProduct",
+        payload: id,
+    };
 }
 
 export function changeName(name: string) {
     return {
-        type: 'changeName',
-        payload: name
-    }
+        type: "changeName",
+        payload: name,
+    };
 }
 
 export function changeDate(date: string) {
     return {
-        type: 'changeDate',
-        payload: date
-    }
+        type: "changeDate",
+        payload: date,
+    };
+}
+
+export function setupAllProducts(allProducts: Product[]) {
+    return {
+        type: "setupAllProducts",
+        payload: allProducts,
+    };
 }

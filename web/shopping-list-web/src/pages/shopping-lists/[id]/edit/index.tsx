@@ -21,7 +21,6 @@
 //     allProducts?: Product[];
 // }
 
-
 // export const getServerSideProps = async (context: any) => {
 //     try {
 //         const id: string = context.params.id as string;
@@ -64,7 +63,7 @@
 //     }
 
 //     return (
-//         <MainLayout>
+//         <AppLayout>
 //             <br/>
 //             <nav>
 //                 <Link href={`/shopping-lists/${props.id}`}>Back to List Details</Link>
@@ -82,6 +81,6 @@
 //                 />
 //             </div>
 
-//         </MainLayout>
+//         </AppLayout>
 //     )
 // }
