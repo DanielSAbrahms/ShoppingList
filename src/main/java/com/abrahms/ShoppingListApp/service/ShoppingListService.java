@@ -29,7 +29,7 @@ public class ShoppingListService {
 
     public Collection<ShoppingListDTO> getAllShoppingLists() {
         Collection<ShoppingList> shoppingLists = shoppingListRepository.findAll();
-        return shoppingLists.isEmpty() ? Collections.emptyList(): convertShoppingListsToDTOCollection(shoppingLists, true, false);
+        return shoppingLists.isEmpty() ? Collections.emptyList(): convertShoppingListsToDTOCollection(shoppingLists, true, true);
     }
 
     public ShoppingListDTO getShoppingListByID(UUID id) {

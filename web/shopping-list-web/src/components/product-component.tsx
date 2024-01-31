@@ -53,7 +53,7 @@ const ProductComponent: (props: ProductComponentProps) => React.JSX.Element = (
                             {" "}
                             -{" "}
                         </button>{" "}
-                        Quantity: {props.quantity}{" "}
+                        Quantity: {props.quantity}
                         <button
                             type="button"
                             onClick={() => addProduct(props.product.id)}
@@ -63,7 +63,7 @@ const ProductComponent: (props: ProductComponentProps) => React.JSX.Element = (
                         </button>
                     </span>
                 ) : (
-                    <span>Quantity: {props.quantity}</span>
+                    <h3>Quantity: {props.quantity}</h3>
                 )}
             </div>
         </div>

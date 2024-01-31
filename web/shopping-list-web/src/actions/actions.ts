@@ -1,4 +1,5 @@
 import { Product } from "@/models/product-model";
+import { ShoppingList } from "@/models/shopping-list-model";
 
 export function addProduct(id: string) {
     return {
@@ -32,5 +33,18 @@ export function setupAllProducts(allProducts: Product[]) {
     return {
         type: "setupAllProducts",
         payload: allProducts,
+    };
+}
+
+export function setCurrentList(newCurrentList: ShoppingList) {
+    return {
+        type: "setCurrentList",
+        payload: newCurrentList,
+    };
+}
+
+export function clearCurrentList() {
+    return {
+        type: "clearCurrentList",
     };
 }

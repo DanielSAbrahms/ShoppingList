@@ -9,7 +9,7 @@ type AppLayoutProps = {
 
 const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
     return (
-        <Provider store={store}>
+        <>
             <hr />
             <nav>
                 <Link href={"/"}>Shopping Lists</Link>
@@ -18,7 +18,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
             </nav>
             <hr />
             <main>{children}</main> {/* This will render the page content */}
-        </Provider>
+        </>
     );
 };
 

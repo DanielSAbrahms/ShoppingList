@@ -3,8 +3,9 @@ import { getAllShoppingLists } from "@/services/api-service";
 import ShoppingListComponent from "@/components/list-component";
 import { generateRandomId } from "@/utilities/utilities";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
 import AppLayout from "@/layouts/app-layout";
+import { useDispatch } from "react-redux";
 
 type AllShoppingListsProps = {
     shoppingLists: ShoppingList[];
@@ -16,12 +17,19 @@ export async function getServerSideProps() {
         const shoppingLists: ShoppingList[] = await getAllShoppingLists();
         return { props: { shoppingLists } };
     } catch (e: any) {
-        console.log("There was an error: " + e.message);
-        return { props: { error: "There was an error: " + e.message } };
+        console.error(e.message);
+        return { props: { error: e.message } };
     }
 }
 
 export default function AllShoppingLists(props: AllShoppingListsProps) {
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch({ type: "clearCurrentList" });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     return (
         <AppLayout>
             <h1>All Shopping Lists</h1>

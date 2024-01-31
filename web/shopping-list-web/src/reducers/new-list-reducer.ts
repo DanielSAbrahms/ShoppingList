@@ -1,15 +1,14 @@
 import { Product, ProductInList } from "@/models/product-model";
 import { NewShoppingList } from "@/models/shopping-list-model";
-import { ReducerAction } from "react";
 import { Reducer } from "redux";
 
-export type newListReducerProps = {
+export type NewListReducerProps = {
     newShoppingList: NewShoppingList; // The metadata and products in the shopping list
     allProducts: Product[]; // All products (doesn't not change)
     productsNotInList: Product[]; // All products not in list (updated when shopping list is updated)
 };
 
-const initialState: newListReducerProps = {
+const initialState: NewListReducerProps = {
     newShoppingList: {
         name: "",
         date: "xxxx-xx-xx",
@@ -19,7 +18,7 @@ const initialState: newListReducerProps = {
     productsNotInList: [],
 };
 
-const newListReducer: Reducer<newListReducerProps> = (
+const newListReducer: Reducer<NewListReducerProps> = (
     state = initialState,
     action: any
 ) => {
@@ -31,7 +30,10 @@ const newListReducer: Reducer<newListReducerProps> = (
             // Payload is new name value
             return {
                 ...state,
-                name: action.payload,
+                newShoppingList: {
+                    ...state.newShoppingList,
+                    name: action.payload,
+                },
             };
         }
 
@@ -39,7 +41,10 @@ const newListReducer: Reducer<newListReducerProps> = (
             // Payload is new date value
             return {
                 ...state,
-                date: action.payload,
+                newShoppingList: {
+                    ...state.newShoppingList,
+                    date: action.payload,
+                },
             };
         }
 
@@ -116,17 +121,14 @@ const newListReducer: Reducer<newListReducerProps> = (
                 return state;
             }
 
-            const newQuantity = foundProduct.quantity - 1;
-
-            if (newQuantity < 1) {
+            if (foundProduct.quantity == 1) {
                 // If no more quantity, remove from list
                 return {
                     ...state,
-                    // remove Product to state's product list
                     newShoppingList: {
                         ...state.newShoppingList,
                         products: state.newShoppingList.products.filter(
-                            (p) => p.product.id !== action.payload
+                            (p) => p.product.id !== action.payload // remove Product from state's product list
                         ),
                     },
                     productsNotInList: [

@@ -3,8 +3,16 @@ import React, { useEffect } from "react";
 import ProductComponent from "@/components/product-component";
 import { generateRandomId } from "@/utilities/utilities";
 import { useDispatch, useSelector } from "react-redux";
-import { newListReducerProps } from "@/reducers/new-list-reducer";
+import { NewListReducerProps } from "@/reducers/new-list-reducer";
 import { Product } from "@/models/product-model";
+import { RootReducerProps } from "@/stores/store";
+import {
+    addProduct,
+    changeDate,
+    changeName,
+    removeProduct,
+    setupAllProducts,
+} from "@/actions/actions";
 
 type NewShoppingListFormProps = {
     submitCallback: Function;
@@ -16,29 +24,23 @@ export default function NewShoppingListForm(props: NewShoppingListFormProps) {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch({ type: "setupAllProducts", payload: props.allProducts });
+        dispatch(setupAllProducts(props.allProducts));
+        dispatch({ type: "clearCurrentList" });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const newListState = useSelector(
-        (state: newListReducerProps) => state.newShoppingList
-    );
+    const { newListState, allProductsState, productsNotInListState } =
+        useSelector((state: RootReducerProps) => ({
+            newListState: state.newListState.newShoppingList,
+            allProductsState: state.newListState.allProducts,
+            productsNotInListState: state.newListState.productsNotInList,
+        }));
 
-    const newListNameState = useSelector(
-        (state: newListReducerProps) => state.newShoppingList.name
-    );
-    const newListDateState = useSelector(
-        (state: newListReducerProps) => state.newShoppingList.date
-    );
-    const newListProductsState = useSelector(
-        (state: newListReducerProps) => state.newShoppingList.products
-    );
-
-    const allProductsState = useSelector(
-        (state: newListReducerProps) => state.allProducts
-    );
-    const productsNotInListState = useSelector(
-        (state: newListReducerProps) => state.productsNotInList
-    );
+    const { newListNameState, newListDateState, newListProductsState } = {
+        newListNameState: newListState.name,
+        newListDateState: newListState.date,
+        newListProductsState: newListState.products,
+    };
 
     const verifyData = (formData: NewShoppingList): boolean => {
         return (
@@ -56,24 +58,6 @@ export default function NewShoppingListForm(props: NewShoppingListFormProps) {
         props.submitCallback(newFormData);
     };
 
-    const handleNameChange = (e: any) => {
-        dispatch({ type: "changeName", payload: e.target.value });
-    };
-
-    const handleDateChange = (e: any) => {
-        dispatch({ type: "changeDate", payload: e.target.value });
-    };
-
-    // Should handle adding product or incrementing count
-    const handleAddProduct = (id: string) => {
-        dispatch({ type: "addProduct", payload: id });
-    };
-
-    // Should handle removing product or decrementing count
-    const handleRemoveProduct = (id: string) => {
-        dispatch({ type: "removeProduct", payload: id });
-    };
-
     return (
         <div>
             {!props.error ? (
@@ -85,7 +69,9 @@ export default function NewShoppingListForm(props: NewShoppingListFormProps) {
                             type="text"
                             name="name"
                             value={newListNameState}
-                            onChange={handleNameChange}
+                            onChange={(e) =>
+                                dispatch(changeName(e.target.value))
+                            }
                         />
                     </div>
                     <div>
@@ -97,7 +83,9 @@ export default function NewShoppingListForm(props: NewShoppingListFormProps) {
                             type="text"
                             name="date"
                             value={newListDateState}
-                            onChange={handleDateChange}
+                            onChange={(e) =>
+                                dispatch(changeDate(e.target.value))
+                            }
                         />
                     </div>
                     <br />
@@ -113,9 +101,12 @@ export default function NewShoppingListForm(props: NewShoppingListFormProps) {
                                 product={productInList.product}
                                 quantity={productInList.quantity}
                                 isEditing={true}
-                                // isPartOfList={true}
-                                addProductCallback={handleAddProduct}
-                                removeProductCallback={handleRemoveProduct}
+                                addProductCallback={(id: string) =>
+                                    dispatch(addProduct(id))
+                                }
+                                removeProductCallback={(id: string) =>
+                                    dispatch(removeProduct(id))
+                                }
                             />
                         );
                     })}
@@ -132,8 +123,9 @@ export default function NewShoppingListForm(props: NewShoppingListFormProps) {
                                     product={product}
                                     quantity={0}
                                     isEditing={true}
-                                    // isPartOfList={false}
-                                    addProductCallback={handleAddProduct}
+                                    addProductCallback={(id: string) =>
+                                        dispatch(addProduct(id))
+                                    }
                                 />
                             ) : (
                                 /* If Product is null */ <></>
