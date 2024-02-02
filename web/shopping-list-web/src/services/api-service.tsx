@@ -86,7 +86,7 @@ export const getAllShoppingLists = async (): Promise<ShoppingList[]> => {
         const newShoppingList: ShoppingList = {
             id: shoppingList.id,
             name: shoppingList.name,
-            date: formatDate(shoppingList.date),
+            date: formatIncomingDate(shoppingList.date),
             products: newProductList,
         };
 
@@ -115,7 +115,7 @@ export const getShoppingListById = async (id: string) => {
     const newShoppingList: ShoppingList = {
         id: shoppingList.id,
         name: shoppingList.name,
-        date: formatDate(shoppingList.date),
+        date: formatIncomingDate(shoppingList.date),
         products: newProductList,
     };
 
@@ -127,7 +127,7 @@ export const addShoppingList = (newData: NewShoppingList): Promise<string> => {
     // Fill in Static Data
     var data: NewShoppingListDTO = {
         name: newData.name,
-        date: newData.date,
+        date: formatOutgoingDate(newData.date),
         products: [],
     };
 
@@ -141,10 +141,25 @@ export const addShoppingList = (newData: NewShoppingList): Promise<string> => {
 };
 
 export const updateShoppingListById = (
-    id: string,
     newData: ShoppingList
 ): Promise<string> => {
-    return putData(`shopping-lists/${id}`, newData);
+    console.log("newdata" + newData.id);
+    var data: ShoppingListDTO = {
+        id: newData.id,
+        name: newData.name,
+        date: formatOutgoingDate(newData.date),
+        products: [],
+    };
+
+    // For each product, push instance into list for every quantity
+    newData.products.map((productInList) => {
+        for (var i = 0; i < productInList.quantity; i++) {
+            data.products.push(productInList.product);
+        }
+    });
+
+    console.log("data" + data.id);
+    return putData(`shopping-lists/${data.id}`, data);
 };
 
 export const deleteShoppingListById = (id: string): Promise<string> => {
@@ -154,10 +169,18 @@ export const deleteShoppingListById = (id: string): Promise<string> => {
 export const getAllProducts = (): Promise<Product[]> =>
     fetchData("stores/products");
 
-const formatDate = (dateString: string): string => {
+const formatIncomingDate = (dateString: string): string => {
     const year = dateString.substring(0, 4);
     const month = dateString.substring(5, 7);
     const day = dateString.substring(8, 10);
 
     return `${month}/${day}/${year}`;
+};
+
+const formatOutgoingDate = (dateString: string): string => {
+    const month = dateString.substring(0, 2);
+    const day = dateString.substring(3, 5);
+    const year = dateString.substring(6, 10);
+
+    return `${year}-${month}-${day}`;
 };

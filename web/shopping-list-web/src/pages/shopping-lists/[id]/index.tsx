@@ -45,12 +45,16 @@ export default function ShoppingListDetails(props: ShoppingListDetailsProps) {
         <AppLayout>
             <h1>Shopping List</h1>
             <nav>
-                <Link href={`/shopping-lists/${shoppingListState?.id}/edit`}>
-                    Edit List
-                </Link>
+                {shoppingListState ? (
+                    <Link href={`/shopping-lists/${shoppingListState.id}/edit`}>
+                        Edit List
+                    </Link>
+                ) : (
+                    <></>
+                )}
             </nav>
             <div>
-                {!props.error && shoppingListState !== null ? (
+                {!props.error && shoppingListState ? (
                     <ShoppingListComponent
                         key={generateRandomId()}
                         shoppingList={shoppingListState}

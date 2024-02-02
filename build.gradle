@@ -11,6 +11,10 @@ java {
 	sourceCompatibility = '17'
 }
 
+test {
+	useJUnitPlatform()
+}
+
 repositories {
 	mavenCentral()
 }
@@ -19,4 +23,14 @@ dependencies { // Gradle
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'com.microsoft.sqlserver:mssql-jdbc:11.2.3.jre17'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	// JUnit Jupiter (JUnit 5) for unit testing
+	testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2' // use the latest version
+
+	// Mockito for mocking in tests
+	testImplementation 'org.mockito:mockito-core:4.5.1' // use the latest version
+
+	// Spring Boot Test for Spring-specific testing functionality
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
 }

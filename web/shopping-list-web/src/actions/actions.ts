@@ -43,6 +43,13 @@ export function setCurrentList(newCurrentList: ShoppingList) {
     };
 }
 
+export function setCurrentListForEdit(newCurrentList: ShoppingList) {
+    return {
+        type: "setCurrentListForEdit",
+        payload: newCurrentList,
+    };
+}
+
 export function clearCurrentList() {
     return {
         type: "clearCurrentList",
