@@ -113,7 +113,7 @@ export const getShoppingListById = async (id: string) => {
     });
 
     const newShoppingList: ShoppingList = {
-        id: shoppingList.id,
+        id: id,
         name: shoppingList.name,
         date: formatIncomingDate(shoppingList.date),
         products: newProductList,
@@ -143,7 +143,6 @@ export const addShoppingList = (newData: NewShoppingList): Promise<string> => {
 export const updateShoppingListById = (
     newData: ShoppingList
 ): Promise<string> => {
-    console.log("newdata" + newData.id);
     var data: ShoppingListDTO = {
         id: newData.id,
         name: newData.name,
@@ -158,7 +157,6 @@ export const updateShoppingListById = (
         }
     });
 
-    console.log("data" + data.id);
     return putData(`shopping-lists/${data.id}`, data);
 };
 

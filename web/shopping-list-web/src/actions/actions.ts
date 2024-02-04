@@ -55,3 +55,16 @@ export function clearCurrentList() {
         type: "clearCurrentList",
     };
 }
+
+export function setError(e: any) {
+    return {
+        type: "setError",
+        payload: e,
+    };
+}
+
+export function clearError() {
+    return {
+        type: "setError",
+    };
+}

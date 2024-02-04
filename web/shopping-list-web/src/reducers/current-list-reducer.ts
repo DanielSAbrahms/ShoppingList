@@ -18,7 +18,6 @@ const currentListReducer: Reducer<CurrentListReducerProps> = (
             return state;
 
         case "setCurrentList": {
-            console.log("1 " + action.payload);
             return {
                 ...state,
                 currentList: action.payload,

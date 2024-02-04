@@ -6,6 +6,7 @@ export type NewListReducerProps = {
     newShoppingList: NewShoppingList; // The metadata and products in the shopping list
     allProducts: Product[]; // All products (doesn't not change)
     productsNotInList: Product[]; // All products not in list (updated when shopping list is updated)
+    error: any;
 };
 
 const initialState: NewListReducerProps = {
@@ -16,6 +17,7 @@ const initialState: NewListReducerProps = {
     },
     allProducts: [],
     productsNotInList: [],
+    error: null,
 };
 
 const newListReducer: Reducer<NewListReducerProps> = (
@@ -159,6 +161,20 @@ const newListReducer: Reducer<NewListReducerProps> = (
                 ...state,
                 allProducts: action.payload,
                 productsNotInList: action.payload,
+            };
+        }
+
+        case "setError": {
+            return {
+                ...state,
+                error: action.payload,
+            };
+        }
+
+        case "clearError": {
+            return {
+                ...state,
+                error: null,
             };
         }
     }

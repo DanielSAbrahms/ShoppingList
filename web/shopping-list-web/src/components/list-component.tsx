@@ -18,7 +18,6 @@ const ShoppingListComponent = (props: ShoppingListComponentProps) => {
     const router = useRouter();
 
     const navigateToListDetails = () => {
-        console.log(props.shoppingList);
         dispatch(setCurrentList(props.shoppingList));
         router.replace(`/shopping-lists/${props.shoppingList.id}`);
     };

@@ -12,7 +12,7 @@ const initialState: EditListReducerProps = {
     shoppingListForEdit: {
         id: "",
         name: "",
-        date: "xxxx-xx-xx",
+        date: "xx/xx/xxxx",
         products: [],
     },
     allProducts: [],
@@ -29,9 +29,11 @@ const editListReducer: Reducer<EditListReducerProps> = (
             return state;
 
         case "setCurrentListForEdit": {
+            const productsInList: ProductInList[] = action.payload.products;
+
             // Go through products in list to remove from productsNotInList
             const newProductsNotInList = state.allProducts.filter((p) => {
-                return state.shoppingListForEdit.products.find(
+                return productsInList.find(
                     (pInList) => pInList.product.id === p.id
                 );
             });

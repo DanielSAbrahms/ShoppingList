@@ -21,7 +21,7 @@ export const getServerSideProps = async (context: any) => {
         const shoppingListLookup: ShoppingList = await getShoppingListById(id);
         return { props: { shoppingListLookup } };
     } catch (e: any) {
-        console.log("There was an error: " + e.message);
+        console.error("There was an error: " + e.message);
         return { props: { error: "There was an error: " + e.message } };
     }
 };
@@ -46,9 +46,19 @@ export default function ShoppingListDetails(props: ShoppingListDetailsProps) {
             <h1>Shopping List</h1>
             <nav>
                 {shoppingListState ? (
-                    <Link href={`/shopping-lists/${shoppingListState.id}/edit`}>
-                        Edit List
-                    </Link>
+                    <>
+                        <Link
+                            href={`/shopping-lists/${shoppingListState.id}/edit`}
+                        >
+                            Edit List
+                        </Link>
+                        <br />
+                        <Link
+                            href={`/shopping-lists/${shoppingListState.id}/delete`}
+                        >
+                            Delete List
+                        </Link>
+                    </>
                 ) : (
                     <></>
                 )}

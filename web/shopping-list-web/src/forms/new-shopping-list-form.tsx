@@ -1,22 +1,21 @@
 import { NewShoppingList } from "@/models/shopping-list-model";
 import React, { useEffect } from "react";
 import ProductComponent from "@/components/product-component";
-import { generateRandomId } from "@/utilities/utilities";
 import { useDispatch, useSelector } from "react-redux";
-import { NewListReducerProps } from "@/reducers/new-list-reducer";
 import { Product } from "@/models/product-model";
 import { RootReducerProps } from "@/stores/store";
 import {
     addProduct,
     changeDate,
     changeName,
+    clearError,
     removeProduct,
+    setError,
     setupAllProducts,
 } from "@/actions/actions";
 
 type NewShoppingListFormProps = {
     submitCallback: Function;
-    error?: string;
     allProducts: Product[];
 };
 
@@ -29,12 +28,13 @@ export default function NewShoppingListForm(props: NewShoppingListFormProps) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const { newListState, allProductsState, productsNotInListState } =
-        useSelector((state: RootReducerProps) => ({
+    const { newListState, productsNotInListState, errorState } = useSelector(
+        (state: RootReducerProps) => ({
             newListState: state.newListState.newShoppingList,
-            allProductsState: state.newListState.allProducts,
             productsNotInListState: state.newListState.productsNotInList,
-        }));
+            errorState: state.newListState.error,
+        })
+    );
 
     const { newListNameState, newListDateState, newListProductsState } = {
         newListNameState: newListState.name,
@@ -54,13 +54,18 @@ export default function NewShoppingListForm(props: NewShoppingListFormProps) {
         e.preventDefault();
 
         const newFormData = newListState;
-        if (!verifyData(newFormData)) throw new Error("Could not verify data");
-        props.submitCallback(newFormData);
+        if (!verifyData(newFormData)) {
+            dispatch(setError("Data is bad"));
+            return;
+        } else {
+            dispatch(clearError());
+            props.submitCallback(newFormData);
+        }
     };
 
     return (
         <div>
-            {!props.error ? (
+            {!errorState ? (
                 <form onSubmit={handleSubmit}>
                     <div>
                         <label htmlFor="ListNameInput">Name: </label>
@@ -136,7 +141,7 @@ export default function NewShoppingListForm(props: NewShoppingListFormProps) {
                     )}
                 </form>
             ) : (
-                <p>Error: {props.error}</p>
+                <p>Error: {errorState}</p>
             )}
         </div>
     );
