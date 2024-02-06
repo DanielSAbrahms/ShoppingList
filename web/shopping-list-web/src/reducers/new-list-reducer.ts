@@ -12,7 +12,7 @@ export type NewListReducerProps = {
 const initialState: NewListReducerProps = {
     newShoppingList: {
         name: "",
-        date: "xxxx-xx-xx",
+        date: "xx/xx/xxxx",
         products: [],
     },
     allProducts: [],

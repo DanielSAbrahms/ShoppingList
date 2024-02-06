@@ -5,6 +5,7 @@ import {
     ShoppingListDTO,
 } from "@/models/shopping-list-model";
 import { Product, ProductInList } from "@/models/product-model";
+import { formatIncomingDate, formatOutgoingDate } from "@/utilities/utilities";
 
 async function fetchData(endpoint: string): Promise<any> {
     const response = await fetch(`http://localhost:8080/${endpoint}`, {
@@ -166,19 +167,3 @@ export const deleteShoppingListById = (id: string): Promise<string> => {
 
 export const getAllProducts = (): Promise<Product[]> =>
     fetchData("stores/products");
-
-const formatIncomingDate = (dateString: string): string => {
-    const year = dateString.substring(0, 4);
-    const month = dateString.substring(5, 7);
-    const day = dateString.substring(8, 10);
-
-    return `${month}/${day}/${year}`;
-};
-
-const formatOutgoingDate = (dateString: string): string => {
-    const month = dateString.substring(0, 2);
-    const day = dateString.substring(3, 5);
-    const year = dateString.substring(6, 10);
-
-    return `${year}-${month}-${day}`;
-};

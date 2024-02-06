@@ -3,6 +3,7 @@ import React from "react";
 import { AppProps } from "next/app";
 import { Provider } from "react-redux";
 import store from "@/stores/store";
+import "../../../shopping-list-web/src/app/globals.css";
 
 // This default export is required in a new `pages/_app.js` file.
 export default function MyApp({ Component, pageProps }: AppProps) {

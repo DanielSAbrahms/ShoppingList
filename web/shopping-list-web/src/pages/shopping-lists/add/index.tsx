@@ -36,12 +36,20 @@ export default function AddShoppingList(props: AddShoppingListProps) {
         }
     };
 
+    const navToAllLists = () => {
+        router.replace("/shopping-lists");
+    };
+
     return (
         <AppLayout>
             <br />
-            <nav>
-                <Link href={`/`}>Back to All Lists</Link>
-            </nav>
+            <button
+                type="button"
+                className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                onClick={() => navToAllLists()}
+            >
+                Back to All Lists
+            </button>
             <h1>Add Shopping List</h1>
             <div>
                 <NewShoppingListForm

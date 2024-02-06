@@ -27,18 +27,20 @@ const ProductComponent: (props: ProductComponentProps) => React.JSX.Element = (
     };
 
     return (
-        <div
-            className={"product-component-wrapper"}
-            style={{
-                border: "2px dotted black",
-                padding: "8px",
-                margin: "8px",
-                borderRadius: "8px",
-            }}
-        >
-            <h3>Brand: {props.product.brandName}</h3>
-            <h3>Product: {props.product.productName}</h3>
-            <h3>Price: ${props.product.price}</h3>
+        <li className="flex justify-between gap-x-6 py-5">
+            <div className="flex min-w-0 gap-x-4">
+                <div className="min-w-0 flex-auto">
+                    <p className="text-sm font-semibold leading-6 text-gray-900">
+                        {props.product.brandName}
+                    </p>
+                    <p className="mt-1 truncate text-xs leading-5 text-gray-500">
+                        {props.product.productName}
+                    </p>
+                    <p className="mt-1 truncate text-xs leading-5 text-gray-500">
+                        ${props.product.price}
+                    </p>
+                </div>
+            </div>
             <div>
                 {props.isEditing ? (
                     <span>
@@ -66,7 +68,7 @@ const ProductComponent: (props: ProductComponentProps) => React.JSX.Element = (
                     <h3>Quantity: {props.quantity}</h3>
                 )}
             </div>
-        </div>
+        </li>
     );
 };
 
